@@ -1661,7 +1661,8 @@ function start2D(){
     var outFade=1-Math.max(0,(t-(st.dur-2.1))/2.1);
     var env=Math.max(0,Math.min(grow,outFade));
     var cx=W*0.5, cy=H*0.44;
-    var S=Math.min(H*0.235, W*0.52)/1.06;
+    var kx=(W>H?1.45:1);
+    var S=(W>H? Math.min(H*0.40, W*0.44) : Math.min(H*0.235, W*0.52))/1.06;
     ctx.clearRect(0,0,W,H);
 
     /* 暗幕：中心压暗，让心形更亮 */
@@ -1688,7 +1689,7 @@ function start2D(){
     for(var i=0;i<parts.length;i++){
       var p=parts[i];
       var d=p.r*(pop*pulse+(0.055*Math.sin(t*2.4-p.ph*6.28)));
-      var x=cx+p.x*S*d+p.jx*S, y=cy+p.y*S*d+p.jy*S;
+      var x=cx+p.x*S*kx*d+p.jx*S, y=cy+p.y*S*d+p.jy*S;
       if(t < p.at) continue;
       var fin=Math.min(1,(t-p.at)/p.fin);
       var tw=.6+.4*Math.sin(t*3.0+p.ph*6.28);
@@ -1705,7 +1706,7 @@ function start2D(){
         var mx=cx+Math.cos(Math.atan2(p.y,p.x)+tang*0+bend)*0.5*(Math.abs(p.x)+Math.abs(p.y))*S*dm*0.9;
         var my=cy+Math.sin(Math.atan2(p.y,p.x)+bend)*0.5*(Math.abs(p.x)+Math.abs(p.y))*S*dm*0.9;
         ctx.beginPath();
-        ctx.moveTo(cx+p.x*S*d0, cy+p.y*S*d0);
+        ctx.moveTo(cx+p.x*S*kx*d0, cy+p.y*S*d0);
         ctx.quadraticCurveTo(mx,my,x,y);
         ctx.stroke();
       }

@@ -1229,27 +1229,27 @@ var hbMesh = (function(){
 })();
 
 /* --- 星河: milky way band --- */
-var GN = 3200, galaxy = makePoints(GN, pointsMat({tw:.8, additive:true, opacity:0}));
+var GN = 4200, galaxy = makePoints(GN, pointsMat({tw:.8, additive:true, opacity:0}));
 (function(){ var a = galaxy.userData.a;
   var pal = [[.75,.8,1],[1,.85,.95],[.6,.7,1],[1,1,1],[1,.9,.7],[.8,.65,1]];
   for (var i=0;i<GN;i++){
-    var t = rnd(-1,1), along = t*26, g = (Math.random()+Math.random()+Math.random()-1.5)*(Math.random()<.75?.9:2.6);
-    a.position[i*3] = along; a.position[i*3+1] = g + Math.sin(t*3)*.8; a.position[i*3+2] = rnd(-3,3);
+    var t = rnd(-1,1), along = t*32, g = (Math.random()+Math.random()+Math.random()-1.5)*(Math.random()<.72?1.7:4.6);
+    a.position[i*3] = along; a.position[i*3+1] = g + Math.sin(t*3)*1.3; a.position[i*3+2] = rnd(-6,6);
     var c = pal[(Math.random()*pal.length)|0], core = 1 - Math.min(Math.abs(g)/3,1);
     setCol(a.acol,i,[c[0]*(.6+.4*core), c[1]*(.6+.4*core), c[2]*(.7+.3*core)]);
-    a.size[i] = rnd(.6,1.8)*(Math.random()<.03?2.4:1); a.alpha[i] = rnd(.35,1)*(.5+.5*core);
+    a.size[i] = rnd(.8,2.2)*(Math.random()<.03?2.4:1); a.alpha[i] = rnd(.4,1)*(.55+.45*core);
   } dirty(galaxy); })();
-var NB = 160, nebula = makePoints(NB, pointsMat({additive:true, opacity:0}));
+var NB = 220, nebula = makePoints(NB, pointsMat({additive:true, opacity:0}));
 (function(){ var a = nebula.userData.a, pal = [[.35,.3,.8],[.6,.3,.7],[.25,.45,.9],[.8,.5,.6]];
-  for (var i=0;i<NB;i++){ var t = rnd(-1,1); a.position[i*3] = t*25; a.position[i*3+1] = (Math.random()-.5)*1.6 + Math.sin(t*3)*.8; a.position[i*3+2] = rnd(-2,2);
-    setCol(a.acol,i,pal[i%4]); a.size[i] = rnd(28,60); a.alpha[i] = rnd(.05,.12); } dirty(nebula); })();
-var galaxyG = new THREE.Group(); galaxyG.add(nebula); galaxyG.position.set(0, 1, -14); galaxyG.rotation.z = .55; galaxyG.add(galaxy); scene.add(galaxyG);
+  for (var i=0;i<NB;i++){ var t = rnd(-1,1); a.position[i*3] = t*31; a.position[i*3+1] = (Math.random()-.5)*3.6 + Math.sin(t*3)*1.3; a.position[i*3+2] = rnd(-4,4);
+    setCol(a.acol,i,pal[i%4]); a.size[i] = rnd(44,96); a.alpha[i] = rnd(.05,.13); } dirty(nebula); })();
+var galaxyG = new THREE.Group(); galaxyG.add(nebula); galaxyG.position.set(0, 2.0, -11.5); galaxyG.rotation.z = .55; galaxyG.scale.set(1.25,1.35,1); galaxyG.add(galaxy); scene.add(galaxyG);
 // close sparkle dust around the cake for the galaxy mode
-var DN = 500, dust = makePoints(DN, pointsMat({tw:.9, additive:true, opacity:0}));
+var DN = 640, dust = makePoints(DN, pointsMat({tw:.9, additive:true, opacity:0}));
 (function(){ var a = dust.userData.a;
-  for (var i=0;i<DN;i++){ var th = Math.random()*6.283, r = rnd(1.8,4.6);
+  for (var i=0;i<DN;i++){ var th = Math.random()*6.283, r = rnd(1.6,6.4);
     a.position[i*3] = Math.cos(th)*r; a.position[i*3+1] = rnd(-1.6,2.6); a.position[i*3+2] = Math.sin(th)*r;
-    setCol(a.acol,i, Math.random()<.5?[.75,.85,1]:[1,.9,.75]); a.size[i] = rnd(.6,1.5); }
+    setCol(a.acol,i, Math.random()<.5?[.75,.85,1]:[1,.9,.75]); a.size[i] = rnd(.7,1.9); }
   dirty(dust); })();
 world.add(dust);
 
@@ -1322,26 +1322,31 @@ var FW = (function(){
     life[j]=maxl[j]=l; sz0[j]=s; A.size[j]=s; A.alpha[j]=1;
   }
   function explode(x,y,z,c,n){
-    var base = rnd(3.2,5.4);
-    sparkAt(x,y,z,[1,1,1],0,0,0, .24, 17);
+    var base = rnd(4.6,7.8);
+    sparkAt(x,y,z,[1,1,1],0,0,0, .22, 17);
     for (var k=0;k<n;k++){
       var u = Math.random()*2-1, th = Math.random()*6.2832, q = Math.sqrt(1-u*u), spd = base*(.55+.45*Math.random());
       var white = Math.random() < .12;
       sparkAt(x, y, z,
         white ? [1,1,1] : [Math.min(c[0]*(.82+Math.random()*.3),1), Math.min(c[1]*(.82+Math.random()*.3),1), Math.min(c[2]*(.82+Math.random()*.3),1)],
         q*Math.cos(th)*spd, u*spd*.92+.5, q*Math.sin(th)*spd*.72,
-        rnd(7.5,12.5), rnd(1.7,2.7));
+        rnd(6.6,10.2), rnd(1.8,2.8));
     }
   }
   function launch(){
     var k = 0, found = false;
     for (var q=0;q<RK;q++){ var j=(rcur+q)%RK; if (rlife[j] <= 0){ rcur=(j+1)%RK; k=j; found=true; break; } }
     if (!found) return;
-    var wide = window.innerWidth > window.innerHeight, x = rnd(wide?-3.0:-2.2, wide?3.0:2.2), z = rnd(-1.5,1.0), y0 = -2.2, yt = wide?rnd(1.0,3.4):rnd(1.2,3.2), dur = rnd(.68,.98);
-    rvel[k*3]=rnd(-.3,.3); rvel[k*3+1]=(yt-y0)/dur; rvel[k*3+2]=rnd(-.25,.25);
-    R.position[k*3]=x; R.position[k*3+1]=y0; R.position[k*3+2]=z;
-    R.acol[k*3]=1; R.acol[k*3+1]=.93; R.acol[k*3+2]=.78; R.size[k]=1.1; R.alpha[k]=1;
-    rlife[k]=rmax[k]=dur; rcol[k]=PAL[(Math.random()*PAL.length)|0]; rnum[k]=64+((Math.random()*26)|0);
+    // 按屏幕位置决定炸点，保证无论蛋糕多大、竖屏横屏，烟花都在画面里
+    var sx = isDesk ? rnd(-.02,.74) : rnd(-.60,.60), sy = isDesk ? rnd(-.02,.72) : rnd(.06,.74);
+    var D = camera.position.length();
+    var dir = new THREE.Vector3(sx, sy, .5).unproject(camera).sub(camera.position).normalize();
+    var end = camera.position.clone().add(dir.multiplyScalar(D));
+    var sy0 = end.y - rnd(2.0,2.9), dur = rnd(.7,1.0);
+    rvel[k*3]=0; rvel[k*3+1]=(end.y-sy0)/dur; rvel[k*3+2]=0;
+    R.position[k*3]=end.x; R.position[k*3+1]=sy0; R.position[k*3+2]=end.z;
+    R.acol[k*3]=1; R.acol[k*3+1]=.93; R.acol[k*3+2]=.78; R.size[k]=1.2; R.alpha[k]=1;
+    rlife[k]=rmax[k]=dur; rcol[k]=PAL[(Math.random()*PAL.length)|0]; rnum[k]=54+((Math.random()*24)|0);
   }
   function start(){
     queue = []; clock = 0; running = true;
@@ -1358,7 +1363,7 @@ var FW = (function(){
       rlife[k] -= dt;
       rvel[k*3+1] -= .55*dt;
       R.position[k*3] += rvel[k*3]*dt; R.position[k*3+1] += rvel[k*3+1]*dt; R.position[k*3+2] += rvel[k*3+2]*dt;
-      if (Math.random() < .5) sparkAt(R.position[k*3]+rnd(-.04,.04), R.position[k*3+1]-.05, R.position[k*3+2], [1,.74,.38], rnd(-.25,.25), rnd(-.7,-.15), rnd(-.25,.25), rnd(1.5,2.6), rnd(1.1,1.8));
+      if (Math.random() < .5) sparkAt(R.position[k*3]+rnd(-.04,.04), R.position[k*3+1]-.05, R.position[k*3+2], [1,.74,.38], rnd(-.25,.25), rnd(-.7,-.15), rnd(-.25,.25), rnd(2.0,3.2), rnd(1.2,2.0));
       if (rlife[k] <= 0){
         explode(R.position[k*3], R.position[k*3+1], R.position[k*3+2], rcol[k], rnum[k]);
         R.alpha[k] = 0; R.size[k] = 0;
@@ -1372,7 +1377,7 @@ var FW = (function(){
       vel[j*3] *= d; vel[j*3+1] = vel[j*3+1]*d - 1.0*dt; vel[j*3+2] *= d;
       A.position[j*3] += vel[j*3]*dt; A.position[j*3+1] += vel[j*3+1]*dt; A.position[j*3+2] += vel[j*3+2]*dt;
       var t = life[j]/maxl[j];
-      A.alpha[j] = .58*Math.pow(t,.6)*(.82+.18*Math.sin(A.phase[j]*37+life[j]*21));
+      A.alpha[j] = .5*Math.pow(t,.6)*(.82+.18*Math.sin(A.phase[j]*37+life[j]*21));
       A.size[j] = sz0[j]*(.3+.7*t);
     }
     dirty(sp); dirty(rk);
@@ -1446,7 +1451,7 @@ function layout(){
   if (composer){ composer.setPixelRatio(PR); composer.setSize(viewW, viewH); }
   var regionW = isDesk ? viewW*.62 : viewW;
   camera.aspect = regionW/viewH;
-  var needHalfW = isDesk ? 3.4 : 2.45, needHalfH = isDesk ? 2.75 : 2.15;
+  var needHalfW = isDesk ? 2.78 : 1.86, needHalfH = isDesk ? 2.52 : 1.64;   // 蛋糕与特效整体放大
   var vf = camera.fov*Math.PI/180, tanV = Math.tan(vf/2), tanH = tanV*camera.aspect;
   var dist, offY = 0, offX = 0;
   if (isDesk){ dist = Math.max(needHalfW/tanH, needHalfH/tanV) + 1.2; offX = -(viewW*.69 - viewW/2); }
